@@ -8,10 +8,10 @@ Sandbox for testing SAML with PHP
 
 **Configure /etc/hosts:**
 
-Modify `/etc/hosts` so that `saml-idp.localhost` and `saml-sp.localhost` resolve to the loopback interface `127.0.0.1`:
+Modify `/etc/hosts`: 
 
 ```
 ##
 # Host Database
-127.0.0.1	localhost saml-idp.localhost saml-sp.localhost 
+127.0.0.1	localhost idp.saml.localhost sp.saml.localhost saml.localhost
 ```

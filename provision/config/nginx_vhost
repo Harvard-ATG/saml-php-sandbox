@@ -1,8 +1,8 @@
 server {
 	listen 80;
-	server_name localhost;
+	server_name localhost saml.localhost;
 	
-	root /var/www/src/;
+	root /var/www/src/saml;
 	index index.php index.html;
 	
 	# Important for VirtualBox
@@ -25,9 +25,9 @@ server {
 
 server {
 	listen 80;
-	server_name saml-idp.localhost;
+	server_name idp.saml.localhost;
 	
-	root /var/www/saml-idp/;
+	root /var/www/src/saml-idp/;
 	index index.php index.html;
 	
 	# Important for VirtualBox
@@ -50,9 +50,9 @@ server {
 
 server {
 	listen 80;
-	server_name saml-sp.localhost;
+	server_name sp.saml.localhost;
 	
-	root /var/www/saml-sp/;
+	root /var/www/src/saml-sp/;
 	index index.php index.html;
 	
 	# Important for VirtualBox
