@@ -22,12 +22,13 @@ echo "Installing Nginx"
 apt-get install nginx -y > /dev/null
 
 echo "Configuring Nginx"
-cp -v /var/www/provision/config/nginx_vhost /etc/nginx/sites-available/nginx_vhost 
+#cp -v /var/www/provision/config/nginx_vhost /etc/nginx/sites-available/nginx_vhost 
 if [ -e /etc/nginx/sites-enabled/default ]; then
 	rm -vf /etc/nginx/sites-enabled/default
 fi
 if [ ! -e /etc/nginx/sites-enabled/nginx_vhost ]; then
-	ln -sv /etc/nginx/sites-available/nginx_vhost /etc/nginx/sites-enabled/
+	#ln -sv /etc/nginx/sites-available/nginx_vhost /etc/nginx/sites-enabled/
+	ln -sv /var/www/provision/config/nginx_vhost /etc/nginx/sites-enabled/nginx_vhost 
 fi
 service nginx restart 
 

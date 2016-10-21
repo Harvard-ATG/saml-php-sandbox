@@ -2,7 +2,7 @@ server {
 	listen 80;
 	server_name localhost saml.localhost;
 	
-	root /var/www/src/saml;
+	root /var/www/src/saml/app;
 	index index.php index.html;
 	
 	# Important for VirtualBox
@@ -27,7 +27,45 @@ server {
 	listen 80;
 	server_name idp.saml.localhost;
 	
-	root /var/www/src/saml-idp/;
+	root /var/www/src/saml-idp/app;
+	index index.php index.html;
+	
+	# Important for VirtualBox
+	sendfile off;
+	
+	location / {
+		try_files $uri $uri/ =404;
+	}
+	
+	location /app {
+		alias /var/www/src/saml-idp/app;
+		include fastcgi_params;
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+	}
+
+	location /simplesaml {
+	  alias /var/www/src/saml-idp/simplesamlphp/www;
+		location /simplesaml/resources {
+				try_files $uri @simplesaml =404;
+		}
+		location ~ ^/simplesaml/(.+\.php)(.*)$ {
+			include fastcgi_params;
+			fastcgi_split_path_info       ^/simplesaml(/.+\.php)(.*)$;
+			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+			fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
+			fastcgi_param PATH_INFO $fastcgi_path_info;
+			###return 200 $fastcgi_script_name-$fastcgi_path_info;
+			fastcgi_pass unix:/var/run/php5-fpm.sock;
+		}
+  }
+
+}
+
+server {
+	listen 80;
+	server_name idproxy.saml.localhost;
+	
+	root /var/www/src/saml-idproxy/;
 	index index.php index.html;
 	
 	# Important for VirtualBox
