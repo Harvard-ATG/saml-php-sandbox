@@ -8,9 +8,9 @@
 /*
  * Example SimpleSAMLphp SAML 2.0 SP
  */
-$metadata['https://sp.saml.localhost'] = array(
-	'AssertionConsumerService' => 'https://sp.saml.localhost/simplesamlphp/www/module.php/saml/sp/saml2-acs.php/default-sp',
-	'SingleLogoutService'      => 'https://sp.saml.localhost/simplesamlphp/www/module.php/saml/sp/saml2-logout.php/default-sp',
+$metadata['http://sp.saml.localhost:8080'] = array(
+	'AssertionConsumerService' => 'http://sp.saml.localhost:8080/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp',
+	'SingleLogoutService'      => 'http://sp.saml.localhost:8080/simplesaml/module.php/saml/sp/saml2-logout.php/default-sp',
 );
 
 /*

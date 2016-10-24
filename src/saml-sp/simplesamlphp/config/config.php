@@ -21,7 +21,7 @@ $config = array(
      * external url, no matter where you come from (direct access or via the
      * reverse proxy).
      */
-    'baseurlpath' => 'simplesaml/',
+    'baseurlpath' => 'http://sp.saml.localhost:8080/simplesaml/',
     'certdir' => 'cert/',
     'loggingdir' => 'log/',
     'datadir' => 'data/',
@@ -75,7 +75,7 @@ $config = array(
      * metadata listing and diagnostics pages.
      * You can also put a hash here; run "bin/pwgen.php" to generate one.
      */
-    'auth.adminpassword' => '123',
+    'auth.adminpassword' => 'admin',
     'admin.protectindexpage' => false,
     'admin.protectmetadata' => false,
 
