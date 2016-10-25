@@ -1,69 +1,72 @@
 server {
-	listen 80;
+	listen 8080;
 	server_name localhost saml.localhost;
 	
 	root /var/www/src/saml/app;
 	index index.php index.html;
-	
-	# Important for VirtualBox
-	sendfile off;
+
+	sendfile off; # for virtualbox
 	
 	location / {
 		try_files $uri $uri/ =404;
 	}
-	
+
 	location ~* \.php {
-		include fastcgi_params;
-		
-		fastcgi_pass unix:/var/run/php5-fpm.sock;
-		
+		fastcgi_param SCRIPT_NAME $fastcgi_script_name;
 		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-		fastcgi_cache off;
-		fastcgi_index index.php;
+		include fastcgi_params;
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
 	}
 }
 
 server {
-	listen 80;
+	listen 8080;
 	server_name idp.saml.localhost;
 	
-	root /var/www/src/saml-idp/app;
+	root /var/www/src/saml-idp;
 	index index.php index.html;
 	
 	
 	sendfile off; # for VirtualBox
 	
-	location /app {
+	location ~ ^/app/.+\.php {
+		fastcgi_split_path_info ^(.+?\.php)(/.*)?$;
 		include fastcgi_params;
+		fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		fastcgi_param PATH_INFO $fastcgi_path_info;
 		fastcgi_pass unix:/var/run/php5-fpm.sock;
 	}
 
 	location ~ ^/simplesaml {
 		alias /var/www/src/saml-idp/simplesamlphp/www;
-		location ~ ^/simplesaml(/resources/.*) {
+		location ~ ^/simplesaml(/resources/.*)$ {
 			try_files $1 =404;
 		}
 		location ~ ^/simplesaml/.+\.php {
-			include fastcgi_params;
-	
 			# Test cases for splitting the path info (tested via regex101.com):
-			# 1) /simplesaml/index.php
-			# 2) /simplesaml/module.php
-			# 3) /simplesaml/saml2/idp/metadata.php
-			# 4) /simplesaml/module.php/core/frontpage_welcome.php
-			# 5) /simplesaml/module.php/saml/sp/saml2-acs.php/default-sp/
-			fastcgi_split_path_info ^/simplesaml(/.+?\.php)(/.+\.php.*)?;
-	
+			# 	1) /simplesaml/index.php
+			# 	2) /simplesaml/module.php
+			# 	3) /simplesaml/saml2/idp/metadata.php
+			# 	4) /simplesaml/module.php/core/frontpage_welcome.php
+			# 	5) /simplesaml/module.php/saml/sp/saml2-acs.php/default-sp/
+
+			fastcgi_split_path_info ^/simplesaml(.+?\.php)(/.*)?$;
+			if (!-f $document_root$fastcgi_script_name) {
+        return 404;
+			}
+			include fastcgi_params;
+			fastcgi_param HTTP_PROXY ""; # Mitigate https://httpoxy.org/ vulnerabilities
 			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 			fastcgi_param PATH_INFO $fastcgi_path_info;
-
+			fastcgi_index index.php;
 			fastcgi_pass unix:/var/run/php5-fpm.sock;
 		}
 	}
 }
 
 server {
-	listen 80;
+	listen 8080;
 	server_name idproxy.saml.localhost;
 	
 	root /var/www/src/saml-idproxy/;
@@ -72,38 +75,37 @@ server {
 	# Important for VirtualBox
 	sendfile off;
 
-	location /app {
+	location ~ ^/app/.+\.php {
+		fastcgi_split_path_info ^(.+?\.php)(/.*)?$;
 		include fastcgi_params;
+		fastcgi_param SCRIPT_NAME $fastcgi_script_name;
 		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		fastcgi_param PATH_INFO $fastcgi_path_info;
 		fastcgi_pass unix:/var/run/php5-fpm.sock;
 	}
 
 	location ~ ^/simplesaml {
 		alias /var/www/src/saml-idproxy/simplesamlphp/www;
-		location ~ ^/simplesaml(/resources/.*) {
+		location ~ ^/simplesaml(/resources/.*)$ {
 			try_files $1 =404;
 		}
 		location ~ ^/simplesaml/.+\.php {
+			fastcgi_split_path_info ^/simplesaml(.+?\.php)(/.*)?$;
+			if (!-f $document_root$fastcgi_script_name) {
+        return 404;
+			}
 			include fastcgi_params;
-	
-			# Test cases for splitting the path info (tested via regex101.com):
-			# 1) /simplesaml/index.php
-			# 2) /simplesaml/module.php
-			# 3) /simplesaml/saml2/idp/metadata.php
-			# 4) /simplesaml/module.php/core/frontpage_welcome.php
-			# 5) /simplesaml/module.php/saml/sp/saml2-acs.php/default-sp/
-			fastcgi_split_path_info ^/simplesaml(/.+?\.php)(/.+\.php.*)?;
-	
+			fastcgi_param HTTP_PROXY ""; # Mitigate https://httpoxy.org/ vulnerabilities
 			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 			fastcgi_param PATH_INFO $fastcgi_path_info;
-
+			fastcgi_index index.php;
 			fastcgi_pass unix:/var/run/php5-fpm.sock;
 		}
 	}
 }
 
 server {
-	listen 80;
+	listen 8080;
 	server_name sp.saml.localhost;
 	
 	root /var/www/src/saml-sp/;
@@ -112,31 +114,30 @@ server {
 	# Important for VirtualBox
 	sendfile off;
 	
-	location /app {
+	location ~ ^/app/.+\.php {
+		fastcgi_split_path_info ^(.+?\.php)(/.*)?$;
 		include fastcgi_params;
+		fastcgi_param SCRIPT_NAME $fastcgi_script_name;
 		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		fastcgi_param PATH_INFO $fastcgi_path_info;
 		fastcgi_pass unix:/var/run/php5-fpm.sock;
 	}
 
 	location ~ ^/simplesaml {
 		alias /var/www/src/saml-sp/simplesamlphp/www;
-		location ~ ^/simplesaml(/resources/.*) {
+		location ~ ^/simplesaml(/resources/.*)$ {
 			try_files $1 =404;
 		}
 		location ~ ^/simplesaml/.+\.php {
+			fastcgi_split_path_info ^/simplesaml(.+?\.php)(/.*)?$;
+			if (!-f $document_root$fastcgi_script_name) {
+        return 404;
+			}
 			include fastcgi_params;
-	
-			# Test cases for splitting the path info (tested via regex101.com):
-			# 1) /simplesaml/index.php
-			# 2) /simplesaml/module.php
-			# 3) /simplesaml/saml2/idp/metadata.php
-			# 4) /simplesaml/module.php/core/frontpage_welcome.php
-			# 5) /simplesaml/module.php/saml/sp/saml2-acs.php/default-sp/
-			fastcgi_split_path_info ^/simplesaml(/.+?\.php)(/.+\.php.*)?;
-	
+			fastcgi_param HTTP_PROXY ""; # Mitigate https://httpoxy.org/ vulnerabilities
 			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 			fastcgi_param PATH_INFO $fastcgi_path_info;
-
+			fastcgi_index index.php;
 			fastcgi_pass unix:/var/run/php5-fpm.sock;
 		}
 	}
