@@ -40,6 +40,10 @@ server {
 
 	location ~ ^/simplesaml {
 		alias /var/www/src/saml-idp/simplesamlphp/www;
+		location ~ ^(/simplesaml)/$ {
+			set $indexfile index.php;
+			return 301 $uri$indexfile$is_args$args;
+		}
 		location ~ ^/simplesaml(/resources/.*)$ {
 			try_files $1 =404;
 		}
@@ -86,6 +90,10 @@ server {
 
 	location ~ ^/simplesaml {
 		alias /var/www/src/saml-idproxy/simplesamlphp/www;
+		location ~ ^(/simplesaml)/$ {
+			set $indexfile index.php;
+			return 301 $uri$indexfile$is_args$args;
+		}
 		location ~ ^/simplesaml(/resources/.*)$ {
 			try_files $1 =404;
 		}
@@ -125,6 +133,10 @@ server {
 
 	location ~ ^/simplesaml {
 		alias /var/www/src/saml-sp/simplesamlphp/www;
+		location ~ ^(/simplesaml)/$ {
+			set $indexfile index.php;
+			return 301 $uri$indexfile$is_args$args;
+		}
 		location ~ ^/simplesaml(/resources/.*)$ {
 			try_files $1 =404;
 		}
