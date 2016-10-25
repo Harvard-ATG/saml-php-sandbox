@@ -17,9 +17,7 @@ apt-get install python-software-properties build-essential -y > /dev/null
 echo "Installing PHP"
 apt-get install php5-common php5-dev php5-cli php5-fpm -y > /dev/null
 apt-get install curl php5-curl php5-gd php5-mcrypt php5-mysql -y > /dev/null
-
-cp /var/www/provision/config/www.conf /var/php5/fpm/pool.d/
-
+cp -v /var/www/provision/config/www.conf /etc/php5/fpm/pool.d/
 service php5-fpm restart
 
 echo "Installing Nginx"
