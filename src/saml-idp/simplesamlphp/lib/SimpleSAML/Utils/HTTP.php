@@ -620,7 +620,7 @@ class HTTP
         $baseurl = explode("/", self::getBaseURL());
         $elements = array_slice($baseurl, 3 - count($baseurl), count($baseurl) - 4);
         $path = implode("/", $elements);
-        return self::getSelfHost()."/".$path;
+        return self::getSelfHost().":8080/".$path;
     }
 
 
