@@ -72,6 +72,12 @@ The SP's metadata can be obtained via the **Federation** tab on the installation
 
 ### Configuring the Identity Provider proxy
 
+1. In order to establish itself as an identity provider (idP), modify `config/config.php` and set `'enable.saml20-idp' => true`.
+2. In order to establish itself as a service provider (SP), modify `config/authsources.php` and add a `saml:SP` entry that points to the backend identity provider.
+3. As an idP, configure the SPs in  `metadata/saml20-sp-remote.php`.
+4. As an idP, configure the auth source in `metadata/saml20-idp-hosted.php` which in turn will be the SP defined in `config/authsources.php`.
+5. As a SP, configure the idP in `metadata/saml20-idp-remote.php`.
+
 ### Configuring the Identity Provider
 
 1. The IdP is configured by the metadata stored in `metadata/saml20-idp-hosted.php`.
