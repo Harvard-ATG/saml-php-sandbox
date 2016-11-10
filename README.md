@@ -37,6 +37,37 @@ The flow in this scenario will look like this:
 
 ### Configuring the Service Provider
 
+Important files:
+
+1. `config/authsources.php`
+    - Defines an authentication source. For a service provider, this defines it as an entity that can authenticate against a named identity provider.
+2. `metadata/saml20-idp-remote.php`
+    - Describes the identity provider referenced in the authentication source with information about the login/logout endpoints and the certificate fingerprint.
+
+Example `config/authsources.php`:
+
+```php
+<?php
+$config = array(
+    'admin' => array('core:AdminPassword'),
+
+    // An authentication source which can authenticate
+    // against both SAML 2.0 and Shibboleth 1.3 IdPs.
+    'default-sp' => array(
+        'saml:SP',
+        'privatekey' => 'saml.pem',
+        'certificate' => 'saml.crt',
+        'entityID' => 'http://sp.saml.localhost:8080',
+        'idp' => 'http://idp.saml.localhost:8080/simplesaml/saml2/idp/metadata.php',
+        'discoURL' => null,
+    )
+);
+```
+
+Once those two files are configured, you need to **exchange metadata with the idP**, which will instruct the idP on how to communicate or connect with the service provider. It will provide it with information about the logout endpoint and the assertion service that validates the idP's message.
+
+The SP's metadata can be obtained via the **Federation** tab on the installation page.
+
 ### Configuring the Identity Provider proxy
 
 ### Configuring the Identity Provider
