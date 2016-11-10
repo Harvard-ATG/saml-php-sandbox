@@ -35,6 +35,8 @@ The flow in this scenario will look like this:
 
 ## Configuring SimpleSAMLPHP
 
+Note: you can define `RelayState` in the SP configuration via `authsources.php` which will instruct it where to redirect after authentication.
+
 ### Configuring the Service Provider
 
 Important files:
@@ -71,3 +73,7 @@ The SP's metadata can be obtained via the **Federation** tab on the installation
 ### Configuring the Identity Provider proxy
 
 ### Configuring the Identity Provider
+
+1. The IdP is configured by the metadata stored in `metadata/saml20-idp-hosted.php`.
+2. The identity provider you are configuring needs to know about the service providers you are going to connect to it. This is configured by metadata stored in `metadata/saml20-sp-remote.php`.
+3. The method for adding this IdP to a SP varies between different types of SPs. In general, most SPs need some metadata from the IdP. This should be available from `/saml2/idp/metadata.php`.
