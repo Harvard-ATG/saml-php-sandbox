@@ -24,7 +24,7 @@ $config = array(
 
         // The entity ID of the IdP this should SP should contact.
         // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
-        'idp' => 'http://idp.saml.localhost:8080/simplesaml/saml2/idp/metadata.php',
+        'idp' => 'http://idproxy.saml.localhost:8080/simplesaml/saml2/idp/metadata.php',
 
         // The URL to the discovery service.
         // Can be NULL/unset, in which case a builtin discovery service will be used.
